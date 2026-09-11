@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+router.use('/users', require('./user.routes'));
 router.use('/auth', require('./auth.routes'));
 router.use('/backlogs', require('./backlog.routes'));
 router.use('/sprints', require('./sprint.routes'));
