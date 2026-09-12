@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 router.use('/users', require('./user.routes'));
 router.use('/auth', require('./auth.routes'));
+router.use('/projects', require('./project.routes'));
 router.use('/backlogs', require('./backlog.routes'));
 router.use('/sprints', require('./sprint.routes'));
 router.use('/board', require('./board.routes'));

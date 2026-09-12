@@ -3,9 +3,9 @@ const { logActivity } = require('../services/activityLog.service');
 
 exports.create = async (req, res, next) => {
   try {
-    const { type, description, due_date, assigned_to, priority, sprint_id } = req.body;
+    const { project_id, type, description, title,  due_date, assigned_to, priority, sprint_id } = req.body;
     const backlog = await Backlog.create({
-      type, description, due_date, assigned_to, priority, sprint_id,
+      project_id, type, description, title,  due_date, assigned_to, priority, sprint_id,
       created_by: req.user.id,
       workflow: 'TODO',
     });

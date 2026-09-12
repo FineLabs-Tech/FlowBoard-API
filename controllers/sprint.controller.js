@@ -2,8 +2,8 @@ const { Sprint } = require('../models');
 
 exports.create = async (req, res, next) => {
   try {
-    const { name, description } = req.body;
-    const sprint = await Sprint.create({ name, description, created_by: req.user.id });
+    const { project_id, name, description } = req.body;
+    const sprint = await Sprint.create({ project_id, name, description, created_by: req.user.id });
     res.status(201).json({ success: true, data: sprint });
   } catch (err) { next(err); }
 };
