@@ -3,6 +3,7 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   return sequelize.define('Sprint', {
     id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+    project_id: { type: DataTypes.UUID, allowNull: false },
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     start_date: DataTypes.DATE,
