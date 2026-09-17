@@ -7,5 +7,7 @@ router.get('/', sprintController.getAll);
 router.post('/', sprintController.create);
 router.post('/:id/start', sprintController.start);
 router.post('/:id/complete', sprintController.complete);
+router.put('/:id', sprintController.update);
+router.delete('/:id', sprintController.remove);
 
 module.exports = router;

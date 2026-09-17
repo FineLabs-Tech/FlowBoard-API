@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: my-api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=FlowBoard
+      - DB_USER=postgres
+      - DB_PASS=root
+      - JWT_SECRET=supersecretkey_ganti_ini
+      - JWT_EXPIRES=1d
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npx nodemon server.js
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: my-api-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=FlowBoard
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
