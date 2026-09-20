@@ -21,15 +21,20 @@ exports.start = async (req, res, next) => {
     const sprint = await Sprint.findByPk(req.params.id);
     if (!sprint) return res.status(404).json({ message: 'Sprint tidak ditemukan' });
 
+    const finalStartDate = start_date || new Date();
+
+    if (due_date && new Date(due_date) < new Date(finalStartDate)) {
+      return res.status(400).json({ message: 'Invalid date' });
+    }
+
     sprint.status = 'ACTIVE';
-    sprint.start_date = start_date || new Date();
+    sprint.start_date = finalStartDate;
     sprint.due_date = due_date;
     await sprint.save();
 
     res.json({ success: true, data: sprint });
   } catch (err) { next(err); }
 };
-
 exports.complete = async (req, res, next) => {
   try {
     const sprint = await Sprint.findByPk(req.params.id);
@@ -47,6 +52,19 @@ exports.update = async (req, res, next) => {
     const { name, description, start_date, due_date } = req.body;
     const sprint = await Sprint.findByPk(req.params.id);
     if (!sprint) return res.status(404).json({ message: 'Sprint tidak ditemukan' });
+
+    // Tentuin start_date final: dari body kalau dikirim, atau yang udah ada di DB
+    const effectiveStartDate = start_date !== undefined ? start_date : sprint.start_date;
+
+    // Validasi 1: due_date nggak boleh diset kalau start_date belum ada sama sekali
+    if (due_date !== undefined && !effectiveStartDate) {
+      return res.status(400).json({ message: 'Set start date dulu sebelum set due date' });
+    }
+
+    // Validasi 2: due_date nggak boleh sebelum start_date
+    if (due_date !== undefined && effectiveStartDate && new Date(due_date) < new Date(effectiveStartDate)) {
+      return res.status(400).json({ message: 'Invalid Date' });
+    }
 
     if (name !== undefined) sprint.name = name;
     if (description !== undefined) sprint.description = description;
